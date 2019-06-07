@@ -8,7 +8,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import javafx.beans.binding.StringBinding;
 
 public class App {
     protected static Quote[] createJsonObject(String jsonString) {
