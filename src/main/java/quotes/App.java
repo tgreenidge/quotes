@@ -32,23 +32,15 @@ public class App {
     protected void saveQuoteToFile(String quoteAsString) {
 
         try {
-            BufferedReader reader = new BufferedReader(
-                    new FileReader("assets/recentquotes.json"));
-
-            String line = reader.readLine();
-
-            while(line != null) {
-                if(line == "]")
-                    line.replace("]", ",");
-
-                line = reader.readLine();
-            }
+            // remove last line
+            RandomAccessFile fileToRemoveLastLine = new RandomAccessFile("assets/recentquotes.json", "rw");
+            long length = fileToRemoveLastLine.length();
+            fileToRemoveLastLine.setLength(length - 1);
+            fileToRemoveLastLine.close();
 
             BufferedWriter writer = new BufferedWriter(
                     new FileWriter("assets/recentquotes.json", true));
-            writer.append(quoteAsString);
-            //writer.newLine();
-            writer.write(quoteAsString);
+            writer.append(",\n" + quoteAsString + "\n]");
             writer.close();
 
         } catch (IOException e) {
@@ -67,7 +59,7 @@ public class App {
             BufferedReader reader = new BufferedReader(new InputStreamReader((con.getInputStream())));
             String quoteString = reader.readLine().replace("starWarsQuote", "text");
 
-            int index = quoteString.lastIndexOf("—");
+            int index = quoteString.lastIndexOf("— ");
             String quoteStringWithAuthor;
 
             if(index == -1) {
@@ -79,7 +71,7 @@ public class App {
             Gson gson = new Gson();
 
             Quote quote = gson.fromJson(quoteStringWithAuthor, Quote.class);
-            //saveQuoteToFile(quoteStringWithAuthor);
+            saveQuoteToFile(quoteStringWithAuthor);
             return quote.getText();
 
         } catch (FileNotFoundException e) {
